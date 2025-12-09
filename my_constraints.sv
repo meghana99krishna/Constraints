@@ -99,4 +99,112 @@ module reverse_queue_tb;
 
 endmodule
 ///////////////////////////////////
-      
+  class pattern_1122334455;
+  rand int a[10];
+
+  // Constraint to generate 1122334455
+  constraint pattern_c {
+    foreach (a[i]) begin
+      if (i % 2 == 0)
+        a[i] == (i/2) + 1;
+      else
+        a[i] == ((i-1)/2) + 1;
+    end
+  }
+
+  // Display method
+  function void display();
+    $display("Generated pattern:");
+    foreach (a[i]) $write("%0d ", a[i]);
+    $write("\n");
+  endfunction
+endclass
+
+
+module tb;
+  initial begin
+    pattern_1122334455 p = new();
+
+    if (p.randomize()) begin
+      p.display();
+    end
+    else begin
+      $display("Randomization failed");
+    end
+
+    $finish;
+  end
+endmodule
+///////////////////////////////////////
+      class SORTER_or_ascending;
+  rand int da[];   // dynamic array
+
+  // Fix the size (example: 10 elements)
+  constraint size_c {
+    da.size() == 10;
+  }
+
+  // Constraint to sort array in ascending order
+  constraint sort_c {
+    foreach (da[i])
+      if (i > 0)
+        da[i] >= da[i-1];   // ascending ordering rule
+  }
+
+endclass
+////////////////////////////////////////
+  class PatternB;
+  rand bit [2:0] data[9:0];
+
+  constraint c_pairs {
+    // ensure each pair has the same value and pairs increase from 0..4
+    foreach (data[i]) begin
+      if (i % 2 == 1) begin
+        // odd index equals previous (make pair)
+        data[i] == data[i-1];
+      end
+      // for the first element of each pair, force it to the pair index
+      if (i % 2 == 0) begin
+        data[i] == (i/2);
+      end
+    end
+  }
+endclass
+
+module tb_b;
+  initial begin
+    PatternB p = new();
+    if (!p.randomize()) $fatal("Randomize failed");
+    $display("PatternB = %p", p.data);
+    // prints: PatternB = '{0,0,1,1,2,2,3,3,4,4}
+  end
+endmodule
+      ///////////////////////////////////////
+class pattern_gen;
+  rand int a[18];
+
+  // Easy constraint
+  constraint pattern_c {
+    foreach (a[i]) 
+      a[i] == i/3;
+  }
+
+  function void display();
+    foreach (a[i]) $write("%0d ", a[i]);
+    $write("\n");
+  endfunction
+endclass
+
+
+module tb;
+  initial begin
+    pattern_gen p = new();
+
+    p.randomize();
+    p.display();
+
+    $finish;
+  end
+endmodule
+
+
