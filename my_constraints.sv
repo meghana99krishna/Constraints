@@ -221,5 +221,46 @@ Passive Prediction
 “Passive prediction updates the register mirror by observing actual bus transactions via a monitor and reg predictor.”/////////
 
       
+module tb;
+  int q[$] = '{1, 2, 3, 2, 4, 1};
+  bit seen[int];
+  int first_dup;
+  bit found = 0;
 
+  initial begin
+    foreach (q[i]) begin
+      if (seen.exists(q[i])) begin
+        first_dup = q[i];
+        found = 1;
+        break;
+      end
+      else
+        seen[q[i]] = 1;
+    end
+
+    if (found)
+      $display("First duplicate = %0d", first_dup);
+  end
+endmodule
+/////////////////////////////
+      module tb_dup_simple;
+
+  int q[$] = '{1, 2, 3, 2, 4, 1, 5};
+  int dup[$];
+
+  initial begin
+    for (int i = 0; i < q.size(); i++) begin
+      for (int j = i+1; j < q.size(); j++) begin
+        if (q[i] == q[j] && !(q[i] inside {dup}))
+          dup.push_back(q[i]);
+      end
+    end
+
+    $display("Input      = %p", q);
+    $display("Duplicates = %p", dup);
+  end
+
+endmodule
+////////////////////////////////////////////
+      
 
