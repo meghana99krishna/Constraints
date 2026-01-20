@@ -207,4 +207,19 @@ module tb;
   end
 endmodule
 
+      //////////////////////////////////////////
+      Auto Prediction
+
+“Auto prediction automatically updates the register mirror during frontdoor accesses without observing the bus.”
+
+Explicit Prediction
+
+“Explicit prediction manually updates the register mirror using predict() after a transaction.”
+
+Passive Prediction
+
+“Passive prediction updates the register mirror by observing actual bus transactions via a monitor and reg predictor.”/////////
+
+      
+
 
