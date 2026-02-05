@@ -263,4 +263,59 @@ endmodule
 endmodule
 ////////////////////////////////////////////
       
+`timescale 1ns/1ps
 
+// -------------------------------------------------
+// Traffic type enum
+// -------------------------------------------------
+typedef enum int {UNICAST, MULTICAST, BROADCAST} traffic_t;
+
+// -------------------------------------------------
+// Packet class
+// -------------------------------------------------
+class pkt;
+
+  rand traffic_t  t;
+  rand bit [31:0] addr;
+
+  // Traffic type distribution
+  constraint c_type_dist {
+    t dist {
+      UNICAST   := 60,
+      MULTICAST := 30,
+      BROADCAST := 10
+    };
+  }
+
+  // Address mapping using implication
+  constraint c_addr_map {
+    (t == UNICAST)   -> addr inside {[32'h0000_0000 : 32'h0FFF_FFFF]};
+    (t == MULTICAST) -> addr inside {[32'h1000_0000 : 32'h1FFF_FFFF]};
+    (t == BROADCAST) -> addr inside {[32'h2000_0000 : 32'h2FFF_FFFF]};
+  }
+
+endclass
+
+// -------------------------------------------------
+// Testbench
+// -------------------------------------------------
+module tb;
+
+  pkt p;
+
+  initial begin
+    p = new();
+
+    repeat (10) begin
+      assert(p.randomize());
+
+      $display("TYPE=%0s  ADDR=%h",
+               p.t.name(), p.addr);
+    end
+
+    $finish;
+  end
+
+endmodule
+///////////////////////////////////////////////
+      
