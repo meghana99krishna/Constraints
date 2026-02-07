@@ -318,4 +318,30 @@ module tb;
 
 endmodule
 ///////////////////////////////////////////////
+      module largest_second_largest;
+
+  int arr[] = '{10, 45, 3, 99, 56, 99, 23};
+  int max1, max2;
+
+  initial begin
+    max1 = 0;
+    max2 = 0;
+
+    foreach (arr[i]) begin
+      if (arr[i] > max1) begin
+        
+       // max2 = max1;
+        max1 = arr[i];
+      end
+      else if (arr[i] > max2 && arr[i] < max1) begin
+        max2 = arr[i];
+      end
+    end
+
+    $display("Largest = %0d", max1);
+    $display("Second Largest = %0d", max2);
+  end
+ 
+endmodule
+//////////////////////////////////////////////////
       
